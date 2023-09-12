@@ -1,15 +1,18 @@
 version: '3'
 services:
   node:
-    build: ./backend/
+    build: ./backend
     container_name: backend
     restart: always
     volumes:
       - ./backend/:/volumes
     ports:
       - 3001:3001
-    env_file:
-      - ./backend/.env
+    environment:
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_HOST: database
+      MYSQL_PORT: 3306
     depends_on:
       - "database"
 
@@ -20,4 +23,4 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: inventoryinc
     ports:
-      - "33060:3306"
+      - "3306:3306"
