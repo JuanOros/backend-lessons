@@ -9,7 +9,7 @@ app.use(express.json());
 app.get('/staff', async (req, res) => {
    const staff = await staffModel.findAll();
 
-   return res.status(201).json(staff);
+   return res.status(202).json(staff);
 });
 
 app.get('/staff/:id', async (req, res) => {
