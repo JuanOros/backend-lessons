@@ -10,4 +10,4 @@ COPY . .
 
 ENTRYPOINT [ "npm", "run" ]
 
-CMD [ "start" ]
+CMD [ "dev" ]
