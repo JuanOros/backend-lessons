@@ -8,7 +8,7 @@ CREATE TABLE InventoryInc.suppliers (
     phone VARCHAR(40),
     fax VARCHAR(40),
     email VARCHAR(40),
-    other_details VARCHAR(40)
+    otherDetails VARCHAR(40)
 );
 
 CREATE TABLE InventoryInc.role (
@@ -24,9 +24,9 @@ CREATE TABLE InventoryInc.categorys (
 );
 
 CREATE TABLE InventoryInc.payment (
-	bill_number INT(10) PRIMARY KEY,
-    payment_type VARCHAR(40),
-    other_details VARCHAR(40)
+	billNumber INT(10) PRIMARY KEY,
+    paymentType VARCHAR(40),
+    otherDetails VARCHAR(40)
 );
 
 CREATE TABLE InventoryInc.products (
@@ -37,52 +37,52 @@ CREATE TABLE InventoryInc.products (
     price FLOAT(8, 1),
     quantity INT(10),
     `status` VARCHAR(40),
-    other_details VARCHAR(40),
-    supplier_id INT,
-    category_id INT,
-    FOREIGN KEY (category_id) REFERENCES categorys(id),
-    FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
+    otherDetails VARCHAR(40),
+    supplierId INT,
+    categoryId INT,
+    FOREIGN KEY (categoryId) REFERENCES categorys(id),
+    FOREIGN KEY (supplierId) REFERENCES suppliers(id)
 );
 
 CREATE TABLE InventoryInc.staff (
 	id INT PRIMARY KEY AUTO_INCREMENT,
-    first_name VARCHAR(40),
-    last_name VARCHAR(40),
+    firstName VARCHAR(40),
+    lastName VARCHAR(40),
     address VARCHAR(100),
     phone VARCHAR(20),
     email VARCHAR(40),
     user_name VARCHAR(40),
     password VARCHAR(4),
-    role_id INT,
-    FOREIGN KEY (role_id) REFERENCES role(id)
+    roleId INT,
+    FOREIGN KEY (roleId) REFERENCES role(id)
 );
 
 CREATE TABLE InventoryInc.customer (
 	id INT PRIMARY KEY AUTO_INCREMENT,
-    first_name VARCHAR(40),
+    firstName VARCHAR(40),
     address VARCHAR(100),
     phone VARCHAR(20),
     email VARCHAR(40),
-    staff_id INT,
-    FOREIGN KEY (staff_id) REFERENCES staff(id)
+    staffId INT,
+    FOREIGN KEY (staffId) REFERENCES staff(id)
 );
 
 CREATE TABLE InventoryInc.order_details (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     quantity INT(10),
     discount INT(10),
-    date_of_order DATE,
-    product_id INT,
-    bill_number INT,
-    customer_id INT,
-    FOREIGN KEY (product_id) REFERENCES products(id),
-    FOREIGN KEY (bill_number) REFERENCES payment(bill_number),
-    FOREIGN KEY (customer_id) REFERENCES customer(id)
+    orderDate DATE,
+    productId INT,
+    billNumber INT,
+    customerId INT,
+    FOREIGN KEY (productId) REFERENCES products(id),
+    FOREIGN KEY (billNumber) REFERENCES payment(billNumber),
+    FOREIGN KEY (customerId) REFERENCES customer(id)
 );
 
 -- -------------- VALUE INSERTION ----------------------
 
-INSERT INTO InventoryInc.suppliers (address, phone, fax, email, other_details)
+INSERT INTO InventoryInc.suppliers (address, phone, fax, email, otherDetails)
 VALUES
     ('123 Main St', '(11) 5555-1234', '(11) 5555-4321', 'company1@gmail.com', 'Supplier 1 Details'),
     ('456 Elm St', '(21) 5555-2345', '(21) 5555-5432', 'company2@hotmail.com', 'Supplier 2 Details'),
@@ -152,7 +152,7 @@ VALUES
     ('Grocery', 'Grocery Category'),
     ('Pet Supplies', 'Pet Supplies Category');
 
-INSERT INTO InventoryInc.payment (bill_number, payment_type, other_details)
+INSERT INTO InventoryInc.payment (billNumber, paymentType, otherDetails)
 VALUES
     (1001, 'Credit Card', 'Visa'),
     (1002, 'Credit Card', 'MasterCard'),
@@ -165,7 +165,7 @@ VALUES
     (1009, 'E-Wallet', 'Apple Pay'),
     (1010, 'E-Wallet', 'Google Pay');
 
-INSERT INTO InventoryInc.staff (first_name, last_name, address, phone, email, user_name, password, role_id)
+INSERT INTO InventoryInc.staff (firstName, lastName, address, phone, email, user_name, password, roleId)
 VALUES
     ('Ana', 'Silva', '123 Rua das Flores, São Paulo, SP', 11987654321, 'ana.silva@gmail.com', 'ana.silva', 'AbCd', 1),
     ('João', 'Santos', '456 Avenida Brasil, Rio de Janeiro, RJ', 21976543210, 'joao.santos@hotmail.com', 'joao.santos', 'EfGh', 2),
@@ -212,13 +212,13 @@ VALUES
     ('Valentina', 'Almeida', '40404 Rua da Praia, Salvador, BA', 71865432109, 'valentina.almeida@hotmail.com', 'valentina.almeida', 'G7H8', 7),
     ('Enzo', 'Rodrigues', '41414 Rua da Praia, Salvador, BA', 71865432109, 'enzo.rodrigues@gmail.com', 'enzo.rodrigues', 'I9J0', 8);
     
-INSERT INTO InventoryInc.customer (first_name, address, phone, email, staff_id)
+INSERT INTO InventoryInc.customer (firstName, address, phone, email, staffId)
 SELECT
     CONCAT('First Name', number + 1),
     CONCAT('Address', number + 1),
     FLOOR(RAND() * 1000000000) + 1000000000, -- Generate random Brazilian phone numbers
     CONCAT('email', number + 1, '@', IF(number % 2 = 0, 'gmail.com', 'hotmail.com')),
-    FLOOR(RAND() * 38) + 1  -- Generates a staff_id between 1 and 38
+    FLOOR(RAND() * 38) + 1  -- Generates a staffId between 1 and 38
 FROM (
     SELECT 
         (a.N + b.N * 10 + c.N * 100 + d.N * 1000) AS number
@@ -230,7 +230,7 @@ FROM (
 ) AS numbers
 LIMIT 530;
 
-INSERT INTO InventoryInc.products (`name`, `description`, unit, price, quantity, `status`, other_details, supplier_id, category_id)
+INSERT INTO InventoryInc.products (`name`, `description`, unit, price, quantity, `status`, otherDetails, supplierId, categoryId)
 SELECT
     CASE
         WHEN id = 1 THEN CONCAT('Electronics Product ', FLOOR(RAND() * 100))
@@ -254,8 +254,8 @@ SELECT
     CASE
         WHEN RAND() < 0.5 THEN NULL
         ELSE CONCAT('Random Details ', FLOOR(RAND() * 100))
-    END AS other_details,
-    FLOOR(1 + RAND() * 30) AS supplier_id,
+    END AS otherDetails,
+    FLOOR(1 + RAND() * 30) AS supplierId,
     id
 FROM
     (
@@ -286,16 +286,16 @@ CROSS JOIN
     ) AS quantity_numbers
 LIMIT 130;
 
-SET @bill_numbers = '1001,1002,1003,1004,1005,1006,1007,1008,1009,1010';
+SET @billNumbers = '1001,1002,1003,1004,1005,1006,1007,1008,1009,1010';
 -- Insert 1478 rows of random sample data into the order_details table
-INSERT INTO InventoryInc.order_details (quantity, discount, date_of_order, product_id, bill_number, customer_id)
+INSERT INTO InventoryInc.order_details (quantity, discount, orderDate, productId, billNumber, customerId)
 SELECT
     CASE WHEN RAND() < 0.9 THEN 1 ELSE FLOOR(RAND() * 10) END, -- 90% of quantity values are 1
     CASE WHEN RAND() < 0.9 THEN 0 ELSE FLOOR(RAND() * 100) END, -- 90% of discount values are 0
     DATE_ADD('2021-01-01', INTERVAL FLOOR(RAND() * 1095) DAY), -- Generates random dates between 2021 and today (3 years)
-    FLOOR(RAND() * 120) + 1, -- Generates a random product_id between 1 and 120
-    CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(@bill_numbers, ',', FLOOR(RAND() * 10) + 1), ',', -1) AS UNSIGNED), -- Random bill_number from the array
-    FLOOR(RAND() * 530) + 1 -- Generates a random customer_id between 1 and 530
+    FLOOR(RAND() * 120) + 1, -- Generates a random productId between 1 and 120
+    CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(@billNumbers, ',', FLOOR(RAND() * 10) + 1), ',', -1) AS UNSIGNED), -- Random billNumber from the array
+    FLOOR(RAND() * 530) + 1 -- Generates a random customerId between 1 and 530
 FROM (
     SELECT 
         (a.N + b.N * 10 + c.N * 100 + d.N * 1000) AS number
